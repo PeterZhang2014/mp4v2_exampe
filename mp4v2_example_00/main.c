@@ -237,6 +237,7 @@ void *video_streaming(void *arg)
 				if (ucBuf[i]==0x00 && ucBuf[i+1]==0x00 && ucBuf[i+2]==0x00 && ucBuf[i+3]==0x01 && (ucBuf[i+4]&0x1f)==7)
 				{
 					uiFlag = 1;
+					mp4v2_set_videotrack_avcinfo(ThreadParam,ucBuf[i+5],ucBuf[i+6],ucBuf[i+7]);
 					break;
 				}
 			}

@@ -15,10 +15,8 @@ export AS LD CC CPP AR NM
 export STRIP OBJCOPY OBJDUMP
 
 CFLAGS := -Wall -O2 -g
-CFLAGS += -I $(shell pwd)/include/\
-		  -I $(shell pwd)/include/mp4v2/
-
-LDFLAGS := -lpthread -lmp4v2 -L$(shell pwd)/lib 
+CFLAGS += -I $(shell pwd)/include/
+LDFLAGS := -lpthread  -lmp4v2
 
 export CFLAGS LDFLAGS
 

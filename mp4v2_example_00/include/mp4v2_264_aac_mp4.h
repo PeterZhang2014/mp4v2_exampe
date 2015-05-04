@@ -49,9 +49,10 @@ struct mp4v2_info{
 	unsigned int uiChannel;
 	/*queue info*/
 	queue *pDataQuePtr;
-	/*end flag*/
+	/*flag*/
 	unsigned int uiAudioEndFlag;
 	unsigned int uiVideoEndFlag;
+	unsigned int uiVideoTrackAVCSetFlag;
 };
 
 struct mp4v2_info *mp4v2_info_init(char *file_name, unsigned int video_width,\
@@ -59,6 +60,9 @@ struct mp4v2_info *mp4v2_info_init(char *file_name, unsigned int video_width,\
 		unsigned int audio_samplerate, int queue_maxsize);
 
 void mp4v2_info_deinit(struct mp4v2_info *mp4v2_info_ptr);
+
+void mp4v2_set_videotrack_avcinfo(struct mp4v2_info *mp4v2_info_ptr, unsigned int avc_pro_inc,\
+		unsigned int pro_compat, unsigned int avc_level_inc);
 
 void *mp4v2_h264_aac_to_mp4(void *arg);
 #endif //end ifndef __MP4V2_264_AAC_MP4_H__

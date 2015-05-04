@@ -48,6 +48,7 @@ struct mp4v2_info *mp4v2_info_init(char *file_name, unsigned int video_width,\
 
 	ptr->uiAudioEndFlag = 0;
 	ptr->uiVideoEndFlag = 0;
+	ptr->uiVideoTrackAVCSetFlag = 0;
 
 	ptr->pDataQuePtr = fifo_init(queue_maxsize);
 	if (ptr->pDataQuePtr == NULL)
@@ -63,6 +64,15 @@ void mp4v2_info_deinit(struct mp4v2_info *mp4v2_info_ptr)
 {
 	fifo_free(mp4v2_info_ptr->pDataQuePtr);
 	free(mp4v2_info_ptr);
+}
+
+void mp4v2_set_videotrack_avcinfo(struct mp4v2_info *mp4v2_info_ptr, unsigned int avc_pro_inc,\
+		unsigned int pro_compat, unsigned int avc_level_inc)
+{
+	mp4v2_info_ptr->uiAVCProfileIndication = avc_pro_inc;
+	mp4v2_info_ptr->uiProfileCompat = pro_compat;
+	mp4v2_info_ptr->uiAVCLevelIndication = avc_level_inc;
+	mp4v2_info_ptr->uiVideoTrackAVCSetFlag = 1;
 }
 
 void *mp4v2_h264_aac_to_mp4(void *arg)
@@ -82,6 +92,8 @@ void *mp4v2_h264_aac_to_mp4(void *arg)
 	}
 	MP4SetTimeScale(file, 90000);
 
+	while (param->uiVideoTrackAVCSetFlag == 0) usleep(10000);
+
 	MP4TrackId video = MP4AddH264VideoTrack(file, 90000, 90000/param->uiFrameRate,\
 			param->uiFrameWidth, param->uiFrameHeight, param->uiAVCProfileIndication,\
 			param->uiProfileCompat, param->uiAVCLevelIndication, 3);
@@ -99,7 +111,8 @@ void *mp4v2_h264_aac_to_mp4(void *arg)
 		goto EXIT_1;
 	}
 	MP4SetAudioProfileLevel(file, 0x02);
-
+    
+	system("date");
 	while (1)
 	{
 		unsigned char *data = NULL;
@@ -136,8 +149,10 @@ void *mp4v2_h264_aac_to_mp4(void *arg)
 			usleep(100000);
 		}
 	}//end while(1)
+	system("date");
 EXIT_1:
 	MP4Close(file, 0);
+	system("date");
 EXIT_0:
 	pthread_exit(NULL);
 }
